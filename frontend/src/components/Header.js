@@ -2,8 +2,12 @@ import React from 'react';
 import { FaBars, FaShoppingCart,FaUser} from 'react-icons/fa';
 import logo from "../icons/letter-s.png"
 import {Link} from "react-router-dom"
+import {useSelector} from "react-redux"
 
 function Header() {
+
+  const {cartItems}=useSelector((state)=>state.cart);
+
   return (
     <header className="bg-black text-white py-4">
       <div className="container mx-auto flex justify-between items-center px-4 lg:px-8">
@@ -12,7 +16,7 @@ function Header() {
         </div>
         <nav className="hidden md:flex space-x-6">
           <Link to="/cart" className="text-white hover:text-custom-gold">
-          <span className='flex justify-center items-center gap-1'><FaShoppingCart/><p>cart</p></span>
+          <span className='flex justify-center items-center gap-1'><FaShoppingCart/><p>cart{cartItems.length>0 && <sup className='text-custom-gold'>{cartItems.reduce((acc,element)=>acc+element.qty,0)}</sup>}</p></span>
           </Link>
           <Link to="/signin" className="text-white hover:text-custom-gold">
             <span className='flex justify-center items-center gap-1'><FaUser/><p>Sign in</p></span>

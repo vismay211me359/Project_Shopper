@@ -1,17 +1,41 @@
 import React from 'react'
-import { useParams } from "react-router-dom"
+import { useState } from 'react'
+import { useParams,useNavigate } from "react-router-dom"
 import { Link } from 'react-router-dom'
-import Rating from "../components/Rating"
+import Rating from "../components/Rating.js"
 import { FaArrowLeft } from 'react-icons/fa';
-import { useGetProductDetailsQuery } from '../slices/productsApiSlice';
-import Loader from '../components/Loader';
-import ErrorPage from '../components/ErrorPage';
+import { useGetProductDetailsQuery } from '../slices/productsApiSlice.js';
+import Loader from '../components/Loader.js';
+import ErrorPage from '../components/ErrorPage.js';
+import {addToCart} from "../slices/cartSlice.js"
+import { useDispatch } from 'react-redux'
+
 
 
 const ProductScreen = () => {
 
     const { id: productId } = useParams();
     const { data: product, isLoading, isError } = useGetProductDetailsQuery(productId);
+
+    const dispatch=useDispatch();
+    const navigate=useNavigate();
+
+    const [qty, setqty] = useState(1);
+
+    const handleChange=(e)=>{
+        const value=Math.max(1,Number(e.target.value));
+        if(value>product.countInStock){
+            setqty(product.countInStock);
+        }
+        else{
+            setqty(value);
+        }
+    }
+    
+    const addToCartHandler=()=>{
+        dispatch(addToCart({...product,qty}));
+        navigate('/cart');
+    }
 
     return (
         <>{isLoading ? (<Loader />) : isError ? (<ErrorPage />) : (
@@ -37,16 +61,28 @@ const ProductScreen = () => {
                                 ${product.price}
                             </p>
 
+                            {product.countInStock > 0  && <div className="flex items-center space-x-2 py-4">
+                                <label htmlFor="quantity" className="text-white text-lg font-medium">
+                                    Qty:
+                                </label>
+                                <input
+                                    type="number"
+                                    id="quantity"
+                                    value={qty}
+                                    onChange={handleChange}
+                                    className="w-16 px-2 py-1 text-center text-black bg-white rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-custom-gold"
+                                    min="1"
+                                    max={product.countInStock}
+                                />
+                            </div>}
+
                             {/* Action Buttons */}
                             <div className="flex flex-col md:flex-row gap-4">
-                                <button className="bg-custom-gold text-black px-6 py-3 rounded-lg text-lg font-medium shadow-lg hover:bg-custom-goldhover transition-all disabled:bg-gray-400 disabled:text-gray-700 disabled:cursor-not-allowed" disabled={product.countInStock <= 0}>
-                                    Add to Cart
-                                </button>
-                                <button className="border border-custom-gold text-custom-gold px-6 py-3 rounded-lg text-lg font-medium shadow-lg hover:bg-custom-gold hover:text-black transition-all disabled:bg-gray-400 disabled:text-gray-700 disabled:cursor-not-allowed" disabled={product.countInStock <= 0}>
-                                    Buy Now
+                                <button className="border border-custom-gold text-custom-gold px-6 py-3 rounded-lg text-lg font-medium shadow-lg hover:bg-custom-gold hover:text-black transition-all disabled:bg-gray-400 disabled:text-gray-700 disabled:cursor-not-allowed" disabled={product.countInStock <= 0} onClick={addToCartHandler}>
+                                Add to Cart
                                 </button>
                                 <Link to="/">
-                                    <button className="border bg-gray-400 text-gray-700 px-6 py-3 rounded-lg text-lg font-medium shadow-lg hover:bg-gray-500 transition-all">
+                                    <button className="w-full border bg-gray-400 text-gray-700 px-6 py-3 rounded-lg text-lg font-medium shadow-lg hover:bg-gray-500 transition-all">
                                         <div className='flex items-center gap-1 justify-center'><FaArrowLeft /><p>Home</p></div>
                                     </button>
                                 </Link>
