@@ -1,12 +1,15 @@
 import React from 'react';
-import { FaBars, FaShoppingCart,FaUser} from 'react-icons/fa';
+import { FaShoppingCart,FaUser} from 'react-icons/fa';
 import logo from "../icons/letter-s.png"
 import {Link} from "react-router-dom"
 import {useSelector} from "react-redux"
+import ProfileDropdown from './ProfileDropDown';
+import MobileNav from './MobileNav';
 
 function Header() {
 
   const {cartItems}=useSelector((state)=>state.cart);
+  const {userInfo}=useSelector((state)=>state.auth);
 
   return (
     <header className="bg-black text-white py-4">
@@ -18,18 +21,13 @@ function Header() {
           <Link to="/cart" className="text-white hover:text-custom-gold">
           <span className='flex justify-center items-center gap-1'><FaShoppingCart/><p>cart{cartItems.length>0 && <sup className='text-custom-gold'>{cartItems.reduce((acc,element)=>acc+element.qty,0)}</sup>}</p></span>
           </Link>
-          <Link to="/signin" className="text-white hover:text-custom-gold">
+          {userInfo ? (<ProfileDropdown></ProfileDropdown>) : (<Link to="/login" className="text-white hover:text-custom-gold">
             <span className='flex justify-center items-center gap-1'><FaUser/><p>Sign in</p></span>
-          </Link>
+          </Link>)}
+          
         </nav>
         <div className="flex md:hidden">
-          {/* Mobile Menu Button */}
-          <button
-            type="button"
-            className="text-white hover:text-custom-gold focus:outline-none"
-          >
-            <FaBars />
-          </button>
+          <MobileNav/>
         </div>
       </div>
     </header>
