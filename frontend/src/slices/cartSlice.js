@@ -28,10 +28,22 @@ const cartSlice=createSlice({
         removeFromCart:(state,action)=>{
             state.cartItems=state.cartItems.filter((x)=> x._id !== action.payload);
             return updateCart(state);
+        },
+        saveShippingAddress:(state,action)=>{
+            state.shippingAddress=action.payload;
+            return updateCart(state);
+        },
+        savePaymentMethod:(state,action)=>{
+            state.paymentMethod=action.payload;
+            return updateCart(state);
+        },
+        clearCartItems:(state,action)=>{
+            state.cartItems=[];
+            return updateCart(state);
         }
     }
 });
 
-export const {addToCart,removeFromCart}=cartSlice.actions;
+export const {addToCart,removeFromCart,saveShippingAddress,savePaymentMethod,clearCartItems}=cartSlice.actions;
 
 export default cartSlice.reducer;
