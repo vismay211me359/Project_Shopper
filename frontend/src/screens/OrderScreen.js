@@ -4,7 +4,7 @@ import { useParams } from "react-router-dom";
 import { PayPalButtons, usePayPalScriptReducer } from "@paypal/react-paypal-js";
 import { FaCreditCard } from 'react-icons/fa';
 
-import { useGetOrderDetailsQuery, useGetPayPalClientIdQuery, usePayOrderMutation } from "../slices/ordersApiSlice.js";
+import { useGetOrderDetailsQuery, useGetPayPalClientIdQuery, usePayOrderMutation,useDeliverOrderMutation } from "../slices/ordersApiSlice.js";
 import Loader from '../components/Loader.js';
 import ErrorPage from '../components/ErrorPage.js';
 import { toast } from "react-toastify";
@@ -19,6 +19,8 @@ const OrderScreen = () => {
 
     const [payOrder, { isLoading: loadingPay }] = usePayOrderMutation();
     const [{ isPending }, paypalDispatch] = usePayPalScriptReducer();
+
+    const [deliverOrder,{isLoading:loadingDeliver}]=useDeliverOrderMutation();
 
     const { data: paypal, isLoading: loadingPayPal, error: errorPayPal } = useGetPayPalClientIdQuery();
 
@@ -95,6 +97,16 @@ const OrderScreen = () => {
         }
     };
 
+    const deliverHandler=async(e)=>{
+        try{
+            await deliverOrder(orderId);
+            refetch();
+            toast.success('Order Delivered');
+        }catch(err){
+            toast.error(err?.data?.message || err.message);
+        }
+    }
+
 
     return (isLoading ? (<Loader />) : (error ? <ErrorPage /> : (
         <div className="min-h-screen bg-black text-white p-4">
@@ -134,7 +146,7 @@ const OrderScreen = () => {
                     </button>}
                 </div>
                 {order.isPaid && <p><span className="font-bold">Payment Method:</span> {order.paymentMethod}</p>}
-                {order.isPaid && <p><span className="font-bold">Delivery Date:</span> {order.paidAt}</p>}
+                {order.isPaid && <p><span className="font-bold">Payment Date:</span> {order.paidAt}</p>}
             </div>
 
             <div className="bg-gray-800 p-4 rounded-md shadow-md mb-4">
@@ -181,19 +193,17 @@ const OrderScreen = () => {
                     </div>
                 )}
 
-                {/* {loadingDeliver && <Loader />}
-
-                {userInfo && userInfo.isAdmin && order.isPaid && !order.isDelivered && (
+                {loadingDeliver ? <Loader /> :(userInfo && userInfo.isAdmin && order.isPaid && !order.isDelivered && (
                     <div className="mt-4">
                         <button
                             type="button"
-                            className="w-full bg-custom-gold text-white py-2 px-4 rounded"
+                            className="w-full bg-custom-gold text-white py-2 px-4 rounded hover:text-black hover:bg-custom-goldhover transition-all duration-300"
                             onClick={deliverHandler}
                         >
                             Mark As Delivered
                         </button>
                     </div>
-                )} */}
+                ))}
             </div>
         </div>
     )));

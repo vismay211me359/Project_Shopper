@@ -5,9 +5,12 @@ import {useLogoutMutation} from "../slices/usersApiSlice.js";
 import {logout} from "../slices/authSlice.js";
 import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
+import {useSelector} from "react-redux"
 
 const ProfileDropdown = () => {
     const [isOpen, setIsOpen] = useState(false);
+
+    const {userInfo}=useSelector((state)=>state.auth);
 
     const toggleDropdown = () => {
         setIsOpen(!isOpen);
@@ -66,6 +69,27 @@ const ProfileDropdown = () => {
                         >
                             Profile
                         </Link>
+                        {(userInfo && userInfo.isAdmin) && <Link
+                            to="/admin/orderlist"
+                            className="text-white hover:text-custom-gold"
+                            onClick={closeDropdown}
+                        >
+                            Orders
+                        </Link>}
+                        {(userInfo && userInfo.isAdmin) && <Link
+                            to="/admin/productlist"
+                            className="text-white hover:text-custom-gold"
+                            onClick={closeDropdown}
+                        >
+                            Products
+                        </Link>}
+                        {(userInfo && userInfo.isAdmin) && <Link
+                            to="/admin/userlist"
+                            className="text-white hover:text-custom-gold"
+                            onClick={closeDropdown}
+                        >
+                            Users
+                        </Link>}
                         <button
                             onClick={logoutHandler}
                             className="text-white hover:text-custom-gold focus:outline-none self-start"

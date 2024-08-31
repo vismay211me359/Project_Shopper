@@ -74,6 +74,33 @@ const MobileNav = () => {
                                     <span className='flex justify-center items-center gap-1'><FaUser/><p>Profile</p></span>
                                 </Link>
                             </li>)}
+                            {(userInfo && userInfo.isAdmin) && (<li>
+                                <Link
+                                    to="/admin/orderlist"
+                                    className="text-custom-gold hover:text-white"
+                                    onClick={closeDropdown}
+                                >
+                                    <span className='flex justify-center items-center gap-1'>Orders</span>
+                                </Link>
+                            </li>)}
+                            {(userInfo && userInfo.isAdmin) && (<li>
+                                <Link
+                                    to="/admin/productlist"
+                                    className="text-custom-gold hover:text-white"
+                                    onClick={closeDropdown}
+                                >
+                                    <span className='flex justify-center items-center gap-1'>Products</span>
+                                </Link>
+                            </li>)}
+                            {(userInfo && userInfo.isAdmin) && (<li>
+                                <Link
+                                    to="/admin/userlist"
+                                    className="text-custom-gold hover:text-white"
+                                    onClick={closeDropdown}
+                                >
+                                    <span className='flex justify-center items-center gap-1'>Users</span>
+                                </Link>
+                            </li>)}
                             <li>
                                 <Link
                                     to="/cart"
