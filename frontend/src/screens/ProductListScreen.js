@@ -5,12 +5,16 @@ import Loader from '../components/Loader';
 import ErrorPage from '../components/ErrorPage';
 import { useGetProductsQuery, useCreateProductMutation, useDeleteProductMutation } from '../slices/productsApiSlice';
 import { toast } from "react-toastify";
+import { useParams } from 'react-router-dom';
+import Paginate from '../components/Paginate';
 
 
 
 const ProductListScreen = () => {
 
-    const { data: products, isLoading, error, refetch } = useGetProductsQuery();
+    const {pageNumber}=useParams();
+
+    const { data, isLoading, isError, refetch } = useGetProductsQuery({pageNumber});
 
     const [createProduct, { isLoading: loadingCreate }] = useCreateProductMutation();
 
@@ -54,7 +58,7 @@ const ProductListScreen = () => {
                     )}
                 </div>
             </div>
-            {isLoading ? (<Loader />) : error ? (<ErrorPage />) : (<div className="overflow-x-auto">
+            {isLoading ? (<Loader />) : isError ? (<ErrorPage />) : (<div className="overflow-x-auto">
                 <table className="min-w-full bg-gray-800 rounded-md">
                     <thead className="bg-gray-700">
                         <tr>
@@ -68,7 +72,7 @@ const ProductListScreen = () => {
                         </tr>
                     </thead>
                     <tbody>
-                        {products.map((product) => (
+                        {data.products.map((product) => (
                             <tr className="border-b border-gray-600" key={product._id}>
                                 <td className="p-4 text-center">{product._id}</td>
                                 <td className="p-4 text-center">{product.name}</td>
@@ -92,6 +96,7 @@ const ProductListScreen = () => {
                     </tbody>
                 </table>
             </div>)}
+            {!isLoading && <Paginate totalPages={data.pages} isAdmin={true}/>}
         </div>
     )
 }
