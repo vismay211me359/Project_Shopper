@@ -3,7 +3,7 @@ import { useNavigate, useParams } from "react-router-dom";
 
 const Paginate = ({totalPages,isAdmin=false}) => {
   const navigate = useNavigate();
-  const { pageNumber } = useParams();
+  const { pageNumber,keyword } = useParams();
   const [currentPage, setCurrentPage] = useState(parseInt(pageNumber) || 1);
   const [pageNumbers, setPageNumbers] = useState([]);
 
@@ -19,11 +19,16 @@ const Paginate = ({totalPages,isAdmin=false}) => {
 
   const handlePageClick = (page) => {
     setCurrentPage(page);
-    if(isAdmin){
-      navigate(`/admin/productlist/${page}`)
+    if(!isAdmin){
+      if(keyword){
+        navigate(`/search/${keyword}/page/${page}`);
+      }
+      else{
+        navigate(`/page/${page}`);
+      }
     }
     else{
-      navigate(`/page/${page}`);
+      navigate(`/admin/productlist/${page}`)
     }
   };
 

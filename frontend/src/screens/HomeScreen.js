@@ -8,9 +8,9 @@ import { useParams } from 'react-router-dom';
 
 const HomeScreen = () => {
 
-  const {pageNumber}=useParams();
+  const {pageNumber,keyword}=useParams();
 
-  const { data, isLoading, isError } = useGetProductsQuery({pageNumber});
+  const { data, isLoading, isError } = useGetProductsQuery({keyword,pageNumber});
 
   return (
     <>
