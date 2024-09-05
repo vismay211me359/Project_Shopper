@@ -12,6 +12,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import { toast } from "react-toastify";
 import { FaStar } from 'react-icons/fa';
 import { FaSpinner } from 'react-icons/fa';
+import Meta from '../components/Meta.js'
 
 
 
@@ -66,6 +67,7 @@ const ProductScreen = () => {
     return (
         <>{isLoading ? (<Loader />) : isError ? (<ErrorPage />) : (
             <div className="min-h-screen flex items-center justify-center bg-black text-white">
+                <Meta title={product.name} />
                 <div className="max-w-5xl w-full p-6 md:p-12">
                     <div className="flex flex-col md:flex-row">
                         {/* Product Image */}
